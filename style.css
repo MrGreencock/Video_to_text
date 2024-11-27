@@ -1,258 +1,520 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
 body{
-  min-height: 100vh;
-  background: #E3F2FD;
-}
-body, .container, .video-controls, .video-timer, .options{
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background-color: #9E9EA2;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
 }
 
-/* Az .import-optiont Kamilla fogja megcsinálni. */
+.vaszon{
+    padding-top: 1em;
+}
 
-.upload-progress-container {
+.dekorelem{
+    margin: 0 auto;
+    background-color: #3d3d3d;
+}
+
+.vaszon .egy{
+    width: 8em;
+    height: 1.3em;
+}
+
+.vaszon .ketto{
+    width: 55em;
+    height: 3em;
+    background-color: #ffffff00;
+    position: relative;
+}
+
+.vaszon .kettoa{
     width: 100%;
-    background-color: #f3f3f3;
-    border-radius: 5px;
-    margin-top: 10px;
+    height: 2em;
+    background-color: #3d3d3d;
+    position: absolute;
+    top: 15%;
 }
 
-#upload-progress-bar {
-  width: 0%;
-  height: 20px;
-  background-color: #4caf50;
-  text-align: center;
-  line-height: 20px;
-  color: white;
-  border-radius: 5px; 
+.vaszon .kettob{
+    width: 95%;
+    height: 100%;
+    background: #d6d5d5;
+    background: linear-gradient(0deg, rgba(214,213,213,1) 62%, rgba(119,119,119,1) 100%);
+    position: absolute;
+    top: 0;
+    left: 2.5%;
+}
+
+.harom{
+    width: 50em;
+    height: 1.7em;
+}
+
+#upload-progress-bar{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-family: Poppins;
+}
+
+.nyil{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vissza, .visszavissza{
+    display: none;
+    text-align: center;
+    width: 3em;
+    font-size: 3em;
+    color: #2b59b0;
+    cursor: pointer;
+}
+
+.vissza:hover, .visszavissza:hover{
+    transform: translateY(-0.2em);
+}
+
+.import-options{
+    margin-top: 5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.import-options .gomb, .import-options button{
+    margin-bottom: 1em;
+    padding: 1.5em 4em;
+    background-color: #2b59b0;
+    color: #fff;
+    font-family: Poppins;
+    border: none;
+    border-radius: 5em;
+    box-shadow: 0 0.5em 1em #00000033;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    font-size: 1em;
+}
+
+.import-options .gomb{
+    font-size: 1.5em;
+    padding: 1em 4em;
+    display: block;
+}
+
+.import-options .gomb:hover, button:hover{
+    transform: translateY(-0.3em);
+    box-shadow: 0 0.75em 1.25em rgba(0, 0, 0, 0.3);
+}
+
+.import-options input{
+    display: none;
+}
+
+.lout{
+    position: fixed;
+    right: 0%;
+    top: 0%;
+    margin: 2em;
+    padding: 0.5em 1.5em;
+    font-family: Poppins;
+    border: none;
+    background-color: unset;
+    color: #2b59b0;
+    cursor: pointer;
+}
+
+.lout i{
+    font-size: 2em;
+}
+
+.lout:hover{
+    background-color: #d6d5d582;
+    border-radius: 5em;
+}
+
+.szalag{    
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: #3d3d3d;
+    height: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    transform: translateY(50%);
+    transition: transform 0.3s ease; 
+    z-index: 5;
+}
+
+.szalag:hover{
+    transform: translateY(0);
+}
+
+.szalag .videok{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: auto;
+    gap: 1em;
+    overflow-x: auto;
+    padding: 1em;
+}
+
+.szalag .videok::-webkit-scrollbar {
+    display: none;
+}
+
+.szalag .video{
+    aspect-ratio: 16 / 9;
+    width: auto;
+    height: 13em;
+    border-radius: 1em;
+    background-color: #9e9ea263;
+    margin: 1.5em 0.3em;
+    flex-shrink: 0;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+.szalag .video button{
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    border-radius: inherit;
+    border: none;
+    background-color: #9e9ea263;
+    opacity: 0;
+}
+
+.szalag .video p{
+    display: none;
+}
+
+.szalag .video video{
+    width: 100%;
+    height: 100%;
+    border-radius: 1em;
+}
+
+.szalag .video button:hover{
+    transform: none;
+    box-shadow: none;
+    opacity: 75%;
+}
+
+.szalag .video button:hover > p{
+    display: block;
+    word-wrap: break-word;
+    font-family: 'Poppins';
+    color: white;
+}
+
+video::before{
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.container, .video-controls, .video-timer, .options{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .container{
-  width: 98%;
-  user-select: none;
-  overflow: hidden;
-  max-width: 900px;
-  border-radius: 5px;
-  background: #000;
-  aspect-ratio: 16 / 9;
-  position: relative;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-.container.fullscreen{
-  max-width: 100%;
-  width: 100%;
-  height: 100vh;
-  border-radius: 0px;
-}
-.wrapper{
-  position: absolute;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  opacity: 0;
-  bottom: -15px;
-  transition: all 0.08s ease;
-}
-.container.show-controls .wrapper{
-  opacity: 1;
-  bottom: 0;
-  transition: all 0.13s ease;
-}
-.wrapper::before{
-  content: "";
-  bottom: 0;
-  width: 100%;
-  z-index: -1;
-  position: absolute;
-  height: calc(100% + 35px);
-  pointer-events: none;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-}
-.video-timeline{
-  height: 7px;
-  width: 100%;
-  cursor: pointer;
-}
-.video-timeline .progress-area{
-  height: 3px;
-  position: relative;
-  background: rgba(255, 255, 255, 0.6);
-}
-.progress-area span{
-  position: absolute;
-  left: 50%;
-  top: -25px;
-  font-size: 13px;
-  color: #fff;
-  pointer-events: none;
-  transform: translateX(-50%);
-}
-.progress-area .progress-bar{
-  width: 0%;
-  height: 100%;
-  position: relative;
-  background: #2289ff;
-}
-.progress-bar::before{
-  content: "";
-  right: 0;
-  top: 50%;
-  height: 13px;
-  width: 13px;
-  position: absolute;
-  border-radius: 50%;
-  background: #2289ff;
-  transform: translateY(-50%);
-}
-.progress-bar::before, .progress-area span{
-  display: none;
-}
-.video-timeline:hover .progress-bar::before,
-.video-timeline:hover .progress-area span{
-  display: block;
-}
-.wrapper .video-controls{
-  padding: 5px 20px 10px;
-}
-.video-controls .options{
-  width: 100%;
-}
-.video-controls .options:first-child{
-  justify-content: flex-start;
-}
-.video-controls .options:last-child{
-  justify-content: flex-end;
-}
-.options button{
-  height: 40px;
-  width: 40px;
-  font-size: 19px;
-  border: none;
-  cursor: pointer;
-  background: none;
-  color: #efefef;
-  border-radius: 3px;
-  transition: all 0.3s ease;
-}
-.options button :where(i, span) {
-  height: 100%;
-  width: 100%;
-  line-height: 40px;
-}
-.options button:hover :where(i, span){
-  color: #fff;
-}
-.options button:active :where(i, span){
-  transform: scale(0.9);
-}
-.options button span{
-  font-size: 23px;
-}
-.options input{
-  height: 4px;
-  margin-left: 3px;
-  max-width: 75px;
-  accent-color: #0078FF;
-}
-.options .video-timer{
-  color: #efefef;
-  margin-left: 15px;
-  font-size: 14px;
-}
-.video-timer .separator{
-  margin: 0 5px;
-  font-size: 16px;
-  font-family: "Open sans";
-}
-.playback-content{
-  display: flex;
-  position: relative;
-}
-.playback-content .speed-options{
-  position: absolute;
-  list-style: none;
-  left: -40px;
-  bottom: 40px;
-  width: 95px;
-  overflow: hidden;
-  opacity: 0;
-  border-radius: 4px;
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  transition: opacity 0.13s ease;
-}
-.playback-content .speed-options.show{
-  opacity: 1;
-  pointer-events: auto;
-}
-.speed-options li{
-  cursor: pointer;
-  color: #000;
-  font-size: 14px;
-  margin: 2px 0;
-  padding: 5px 0 5px 15px;
-  transition: all 0.1s ease;
-}
-.speed-options li:where(:first-child, :last-child){
-  margin: 0px;
-}
-.speed-options li:hover{
-  background: #dfdfdf;
-}
-.speed-options li.active{
-  color: #fff;
-  background: #3e97fd;
-}
-.container video{
-  width: 100%;
+    margin: 0 auto;
+    padding: 2em 2em;
+    width: 44em;
+    height: 25em;
+    max-height: 25em;
+    background-color: #3d3d3d;
+    user-select: none;
+    overflow: hidden;
+    max-width: 900px;
+    aspect-ratio: 16 / 9;
+    position: relative;
 }
 
-@media screen and (max-width: 540px) {
-  .wrapper .video-controls{
-    padding: 3px 10px 7px;
-  }
-  .options input, .progress-area span{
-    display: none!important;
-  }
-  .options button{
-    height: 30px;
-    width: 30px;
-    font-size: 17px;
-  }
-  .options .video-timer{
-    margin-left: 5px;
-  }
-  .video-timer .separator{
-    font-size: 14px;
-    margin: 0 2px;
-  }
-  .options button :where(i, span) {
-    line-height: 30px;
-  }
-  .options button span{
-    font-size: 21px;
-  }
-  .options .video-timer, .progress-area span, .speed-options li{
-    font-size: 12px;
-  }
-  .playback-content .speed-options{
-    width: 75px;
-    left: -30px;
-    bottom: 30px;
-  }
-  .speed-options li{
-    margin: 1px 0;
-    padding: 3px 0 3px 10px;
-  }
-  .right .pic-in-pic{
+.container video{
+    background-color: #fff;
+    margin-top: 2em;
+}
+
+/* .container .fullscreen{
+    max-width: 100%;
+    width: 100%;
+    height: 100vh;
+    border-radius: 0px;
+} */
+
+.wrapper{
+    position: absolute;
+    width: 90%;
+    left: 5%;
+    right: 0;
+    z-index: 1;
+    opacity: 0;
+    bottom: -15px;
+    transition: all 0.08s ease;
+}
+
+.container.show-controls .wrapper{
+    opacity: 1;
+    bottom: 0;
+    transition: all 0.13s ease;
+}
+
+.wrapper::before{
+    content: "";
+    bottom: 0;
+    width: 100%;
+    z-index: -1;
+    position: absolute;
+    height: calc(100% + 35px);
+    pointer-events: none;
+}
+
+.video-timeline{
+    height: 7px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.video-timeline .progress-area{
+    height: 3px;
+    position: relative;
+    background: #ffffff99;
+}
+
+.progress-area span{
+    position: absolute;
+    left: 50%;
+    top: -25px;
+    font-size: 13px;
+    color: #fff;
+    pointer-events: none;
+    transform: translateX(-50%);
+}
+
+.progress-area .progress-bar{
+    width: 0%;
+    height: 100%;
+    position: relative;
+    background: #2b59b0;
+}
+
+.progress-bar::before{
+    content: "";
+    right: 0;
+    top: 50%;
+    height: 13px;
+    width: 13px;
+    position: absolute;
+    border-radius: 50%;
+    background: #2b59b0;
+    transform: translateY(-50%);
+}
+
+.progress-bar::before, .progress-area span{
     display: none;
-  }
+}
+
+.video-timeline:hover .progress-bar::before,
+.video-timeline:hover .progress-area span{
+    display: block;
+}
+
+.wrapper .video-controls{
+    padding: 5px 20px 10px;
+}
+
+.video-controls .options{
+    width: 100%;
+}
+
+.video-controls .options:first-child{
+    justify-content: flex-start;
+}
+
+.video-controls .options:last-child{
+    justify-content: flex-end;
+}
+
+.options button{
+    height: 40px;
+    width: 40px;
+    font-size: 19px;
+    border: none;
+    cursor: pointer;
+    background: none;
+    color: #efefef;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+.options button :where(i, span) {
+    height: 100%;
+    width: 100%;
+    line-height: 40px;
+}
+.options button:hover :where(i, span){
+    color: #fff;
+}
+.options button:active :where(i, span){
+    transform: scale(0.9);
+}
+.options button span{
+    font-size: 23px;
+}
+.options input{
+    height: 4px;
+    margin-left: 3px;
+    max-width: 75px;
+    accent-color: #2b59b0;
+}
+.options .video-timer{
+    color: #efefef;
+    margin-left: 15px;
+    font-size: 14px;
+}
+.video-timer .separator{
+    margin: 0 5px;
+    font-size: 16px;
+    font-family: "Open sans";
+}
+.playback-content{
+    display: flex;
+    position: relative;
+}
+.playback-content .speed-options{
+    position: absolute;
+    list-style: none;
+    left: -40px;
+    bottom: 40px;
+    width: 95px;
+    overflow: hidden;
+    opacity: 0;
+    border-radius: 4px;
+    pointer-events: none;
+    background: #ffffffe6;
+    box-shadow: 0 10px 20px #0000001a;
+    transition: opacity 0.13s ease;
+}
+.playback-content .speed-options.show{
+    opacity: 1;
+    pointer-events: auto;
+}
+.speed-options li{
+    cursor: pointer;
+    color: #000;
+    font-size: 14px;
+    margin: 2px 0;
+    padding: 5px 0 5px 15px;
+    transition: all 0.1s ease;
+}
+.speed-options li:where(:first-child, :last-child){
+    margin: 0px;
+}
+.speed-options li:hover{
+    background: #dfdfdf;
+}
+.speed-options li.active{
+    color: #fff;
+    background: #2b59b0;
+}
+.container video{
+    width: 100%;
+}
+
+
+.login{
+    height: auto;
+    width: 25em;
+    background-color: rgba(255,255,255,0.13);
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 0.1em solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    padding: 3em 2em;
+}
+
+.login *{
+    font-family: 'Poppins',sans-serif;
+    color: #000;
+    letter-spacing: 0.05em;
+    outline: none;
+    border: none;
+}
+.login h3{
+    font-size: 2em;
+    font-weight: 500;
+    line-height: 1em;
+    text-align: center;
+    color: #2b59b0;
+}
+
+.login label{
+    display: block;
+    margin-top: 2em;
+    font-size: 1em;
+    font-weight: 500;
+    color: #3d3d3d;
+}
+
+.login input{
+    display: block;
+    height: 4em;
+    width: 100%;
+    border-radius: 0.5em;
+    padding: 0;
+    margin-top: 1.5em;
+    font-size: 0.8em;
+    font-weight: 300;
+    text-indent: 10px;
+}
+
+.shake {
+    animation: shake 0.5s ease;
+    border-color: red;
+}
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+::placeholder{
+    color: #e5e5e5;
+}
+
+.login button{
+    margin-top: 2em;
+    padding: 1em 2em;
+    width: 100%;
+    background-color: #2b59b0;
+    color: #fff;
+    border: none;
+    border-radius: 5em;
+    box-shadow: 0 0.5em 1em #00000033;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    font-weight: 600;
+    font-size: 1.3em;
 }
