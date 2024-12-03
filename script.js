@@ -12,14 +12,16 @@ playPauseBtn = container.querySelector(".play-pause i"),
 speedBtn = container.querySelector(".playback-speed span"),
 speedOptions = container.querySelector(".speed-options"),
 pipBtn = container.querySelector(".pic-in-pic span"),
-fullScreenBtn = container.querySelector(".fullscreen i");
+fullScreenBtn = container.querySelector(".fullscreen i"),
+langsBtn=container.querySelector(".fordikon i"),
+fCnyelv=container.querySelector(".forras-cel"),
+subtBtn=container.querySelector(".subtitle i"),
+subtOpts=container.querySelector(".subt-options"),
 szalag = document.querySelector(".szalag"),
 vissza = document.querySelector(".vissza"),
 visszavissza = document.querySelector(".visszavissza");
 let timer;
-
 const fileUpload = document.getElementById("fileUpload");
-const youtubeLink = document.getElementById("youtubeLink");
 const importOptions = document.querySelector(".import-options");
 
 
@@ -99,12 +101,12 @@ async function vaszonFel() {
     importOptions.style.display="flex";
     szalag.removeAttribute('style');
     szalag.style.transition="all 0.3s ease-in-out";
-    vissza.removeAttribute('style');
+    vissza.style.display="none";
     visszavissza.style.display="block";
 }
 
 async function vaszonLeMegint() {
-    visszavissza.removeAttribute('style');
+    visszavissza.style.display="none";
     importOptions.style.display="none";
     szalag.style.height="2em";
     szalag.style.transition="all 0.3s ease-in-out";
@@ -125,6 +127,7 @@ function showVideoPlayer(videoURL) {
     szalag.style.transition = "all 0.3s ease-in-out";
     importOptions.style.display = "none"; 
     vissza.style.display="block";
+    visszavissza.style.display="none";
 
     // A videoURL mentése a globális változóba
     currentVideoPath = videoURL;
@@ -227,6 +230,7 @@ document.addEventListener("click", e => {
     }
 });
 
+
 fullScreenBtn.addEventListener("click", () => {
     container.classList.toggle("fullscreen");
     if(document.fullscreenElement) {
@@ -326,6 +330,7 @@ async function insertSRTFile() {
             return;
         }
 
+        // Nyelvek ellenőrzése
         const { sourceLanguage, targetLanguage } = getSelectedLanguages();
 
         try {
@@ -343,31 +348,36 @@ async function insertSRTFile() {
                 throw new Error(`Feltöltési hiba: ${uploadResult.message}`);
             }
 
-            const filePath = uploadResult.file_path; // Feltöltött fájl elérési útja a szerveren
+            const filePath = uploadResult.file_path; 
+            console.log("Felirat URL:", filePath);
 
-            // Fordítás kérés a szerverre
-            const translateResponse = await fetch("http://127.0.0.1:5000/translate", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    file_path: filePath,
-                    source_language: sourceLanguage,
-                    target_language: targetLanguage,
-                }),
-            });
+            if (sourceLanguage && targetLanguage) {
+                // Ha meg vannak adva nyelvek, fordítás kérése
+                const translateResponse = await fetch("http://127.0.0.1:5000/translate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        file_path: filePath,
+                        source_language: sourceLanguage,
+                        target_language: targetLanguage,
+                    }),
+                });
 
-            const translateResult = await translateResponse.json();
-            if (translateResult.status !== "success") {
-                throw new Error(`Fordítási hiba: ${translateResult.message}`);
+                const translateResult = await translateResponse.json();
+                if (translateResult.status !== "success") {
+                    throw new Error(`Fordítási hiba: ${translateResult.message}`);
+                }
+
+                const translatedSubtitles = translateResult.translated_file; // Fordított felirat
+                console.log("Fordított felirat:", translatedSubtitles);
+
+                // Feliratok betöltése a videóhoz
+                loadSubtitles(translatedSubtitles);
+            } else {
+                loadSubtitles(filePath); 
             }
-
-            const translatedSubtitles = translateResult.translated_file; // Fordított felirat
-            console.log("Fordított felirat:", translatedSubtitles);
-
-            // Feliratok betöltése a videóhoz
-            loadSubtitles(translatedSubtitles);
         } catch (error) {
             console.error("Hiba az SRT fájl feldolgozása során:", error);
         }
@@ -376,8 +386,7 @@ async function insertSRTFile() {
     fileInput.click();
 }
 
-
-async function loadSubtitles(filePath, languageCode = "en") {
+async function loadSubtitles(filePath) {
     try {
         console.log(`Betöltés indítása: ${filePath}`);
         
@@ -480,15 +489,80 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains('play-video-btn')) {
             const videoPath = event.target.getAttribute('data-video-path');
             
-            // A lejátszó forrásának frissítése
             videoPlayer.src = videoPath;
             showVideoPlayer(videoPlayer.src)
             importOptions.style.display = "none";
         }
     });
+
+    speedBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isAlreadyVisible = speedOptions.classList.toggle("show");
+        closeAllPopups();
+        if (!isAlreadyVisible) {
+            speedOptions.classList.add("show");
+        }
+    });
+
+    langsBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isAlreadyVisible = fCnyelv.classList.toggle("show");
+        closeAllPopups();
+        if (!isAlreadyVisible) {
+            fCnyelv.classList.add("show");
+        }
+    });
+
+    subtBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isAlreadyVisible = subtOpts.classList.toggle("show");
+        closeAllPopups();
+        if (!isAlreadyVisible) {
+            subtOpts.classList.add("show");
+        }
+    });
 });
 
-speedBtn.addEventListener("click", () => speedOptions.classList.toggle("show"));
+const popupElements = [speedOptions, fCnyelv, subtOpts];
+
+function closeAllPopups(exceptElement = null) {
+    popupElements.forEach(popup => {
+        if (popup !== exceptElement) {
+            popup.classList.remove("show");
+        }
+    });
+}
+
+speedBtn.addEventListener("click", () => {
+    const isAlreadyVisible = speedOptions.classList.contains("show");
+    closeAllPopups(); // Először bezárjuk az összes popupot
+    if (!isAlreadyVisible) {
+        speedOptions.classList.add("show"); // Ha nem volt nyitva, most megnyitjuk
+    }
+});
+
+langsBtn.addEventListener("click", () => {
+    const isAlreadyVisible = fCnyelv.classList.contains("show");
+    closeAllPopups();
+    if (!isAlreadyVisible) {
+        fCnyelv.classList.add("show");
+    }
+});
+
+subtBtn.addEventListener("click", () => {
+    const isAlreadyVisible = subtOpts.classList.contains("show");
+    closeAllPopups();
+    if (!isAlreadyVisible) {
+        subtOpts.classList.add("show");
+    }
+});
+
+document.addEventListener("click", (e) => {
+    if (![speedBtn, langsBtn, subtBtn].includes(e.target.closest("button"))) {
+        closeAllPopups();
+    }
+});
+
 pipBtn.addEventListener("click", () => mainVideo.requestPictureInPicture());
 skipBackward.addEventListener("click", () => mainVideo.currentTime -= 5);
 skipForward.addEventListener("click", () => mainVideo.currentTime += 5);
