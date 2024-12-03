@@ -5,6 +5,8 @@ body{
     height: 100vh;
     overflow: hidden;
     position: relative;
+    font-family: 'Poppins';
+
 }
 
 .vaszon{
@@ -58,7 +60,6 @@ body{
     justify-content: center;
     align-items: center;
     color: #fff;
-    font-family: Poppins;
 }
 
 .nyil{
@@ -94,7 +95,6 @@ body{
     padding: 1.5em 4em;
     background-color: #2b59b0;
     color: #fff;
-    font-family: Poppins;
     border: none;
     border-radius: 5em;
     box-shadow: 0 0.5em 1em #00000033;
@@ -124,7 +124,6 @@ body{
     top: 0%;
     margin: 2em;
     padding: 0.5em 1.5em;
-    font-family: Poppins;
     border: none;
     background-color: unset;
     color: #2b59b0;
@@ -217,7 +216,6 @@ body{
 .szalag .video button:hover > p{
     display: block;
     word-wrap: break-word;
-    font-family: 'Poppins';
     color: white;
 }
 
@@ -434,6 +432,78 @@ video::before{
     color: #fff;
     background: #2b59b0;
 }
+
+.playback-content, .nyelvset, .subtitles{
+    display: flex;
+    position: relative;
+}
+.playback-content .speed-options, .forras-cel, .subt-options{
+    position: absolute;
+    left: -40px;
+    bottom: 40px;
+    list-style: none;
+    padding: 0;
+    width: 10em;
+    max-height: 15em;
+    overflow: auto;
+    opacity: 0;
+    border-radius: 4px;
+    pointer-events: none;
+    background-color: #ffffff65;
+    box-shadow: 0 10px 20px #0000001a;
+    transition: opacity 0.13s ease;
+}
+.playback-content .speed-options.show, .forras-cel.show, .subt-options.show{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.forras-cel select::-webkit-scrollbar{
+    width: 0.3em;
+}
+
+.forras-cel select::-webkit-scrollbar-thumb{
+    background-color: #2b59b0;
+    border-radius: 0.3em;
+}
+
+.forras-cel select{
+    max-height: 15em;
+}
+
+.forras-cel select, .forras-cel option{
+    border: none;
+    background-color: #ff000000;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.speed-options li, .forras-cel select, .subt-options button{
+    cursor: pointer;
+    color: #000;
+    font-size: 14px;
+    margin: 2px 0;
+    padding: 5px 0 5px 15px;
+    transition: all 0.1s ease;
+}
+
+.subt-options button{
+    width: 100%;
+    padding: 0;
+    margin: auto;
+}
+
+.speed-options li:where(:first-child, :last-child), .forras-cel option:where(:first-child, :last-child){
+    margin: 0px;
+}
+.speed-options li:hover, .forras-cel select:hover, .subt-options button:hover{
+    background: #dfdfdf;
+}
+.speed-options li.active, .forras-cel option.active, .subt-options button.active{
+    color: #fff;
+    background: #2b59b0;
+}
 .container video{
     width: 100%;
 }
@@ -505,7 +575,7 @@ video::before{
 }
 
 .login button{
-    margin-top: 2em;
+    margin: 1.5em auto;
     padding: 1em 2em;
     width: 100%;
     background-color: #2b59b0;
@@ -517,4 +587,27 @@ video::before{
     transition: all 0.3s ease-in-out;
     font-weight: 600;
     font-size: 1.3em;
+}
+.login .regisztralhat {
+    margin: auto;
+    padding: 1em 2em;
+    width: 50%;
+    background-color: #2b59b0;
+    border: none;
+    border-radius: 5em;
+    box-shadow: 0 0.5em 1em #00000033;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.login .regisztralhat a {
+    color: white;
+    text-decoration: none;
+}
+
+.login .regisztralhat:hover {
+    transform: translateY(-0.3em);
+    box-shadow: 0 0.75em 1.25em rgba(0, 0, 0, 0.3);
 }
