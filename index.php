@@ -39,6 +39,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+
+        #subtitle {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            font-size: 35px;
+            text-align: center;
+            border-radius: 5px;
+            width: 80%;
+            z-index: 1000;
+            display: none;
+        }
+
+    </style>
   </head>
   <body>
 
@@ -83,13 +102,42 @@
                             <li data-speed="0.5">0.5x</li>
                         </ul>
                     </div>
-                    <button class="subtitles" onclick="loadSubtitles()"><i class="fa-solid fa-closed-captioning"></i></button>
+                    <div class="nyelvset">
+                        <button class="fordikon"><i class="fa-solid fa-language"></i></button>
+                        <div class="forras-cel">
+                            <select id="sourceLanguage">
+                                <option value="">Forrásnyelv</option>
+                                <?php foreach ($languages as $language): ?>
+                                    <option value="<?= htmlspecialchars($language['country_id']) ?>">
+                                        <?= htmlspecialchars($language['country']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+
+                            <select id="targetLanguage">
+                                <option value="">Célnyelv</option>
+                                <?php foreach ($languages as $language): ?>
+                                    <option value="<?= htmlspecialchars($language['country_id']) ?>">
+                                        <?= htmlspecialchars($language['country']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="subtitles">
+                        <button class="subtitle"><i class="fa-solid fa-closed-captioning"></i></button>
+                        <div class="subt-options">
+                            <button onclick="generateSubtitles()">Generáljon feliratot</button>
+                            <button onclick="insertSRTFile()">SRT file beszúrása</button>
+                        </div>
+                    </div>
+
                     <button class="pic-in-pic"><span class="material-icons">picture_in_picture_alt</span></button>
                     <button class="fullscreen"><i class="fa-solid fa-expand"></i></button>
                 </li>
             </ul>
         </div>
-        <div id="subtitle" style="display: none; position: absolute; bottom: 10%; width: 100%; text-align: center; color: white; background: rgba(0, 0, 0, 0.5); padding: 5px; font-size: 35px;"></div>
+        <div id="subtitle"></div>
         <video id="videoPlayer"></video>
     </div>
     <div class="dekorelem harom upload-progress-container">
@@ -98,30 +146,6 @@
     <div class="nyil">
         <div class="vissza" onclick="vaszonFel()">&#11165;</div>
         <div class="visszavissza" onclick="vaszonLeMegint()">&#11167;</div>
-    </div>
-    <div>
-        <label>Forrásnyelv</label>
-        <select id="sourceLanguage">
-            <option value="">Válassz forrásnyelvet</option>
-            <?php foreach ($languages as $language): ?>
-                <option value="<?= htmlspecialchars($language['country_id']) ?>">
-                    <?= htmlspecialchars($language['country']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        
-        <label>Célnyelv</label>
-        <select id="targetLanguage">
-            <option value="">Válassz célnyelvet</option>
-            <?php foreach ($languages as $language): ?>
-                <option value="<?= htmlspecialchars($language['country_id']) ?>">
-                    <?= htmlspecialchars($language['country']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        
-        <button onclick="generateSubtitles()">Generáljon feliratot</button>
-        <button onclick="insertSRTFile()">SRT file beszúrása</button>
     </div>
 
     <div class="import-options">
