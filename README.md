@@ -13,7 +13,7 @@ Négyen dolgozunk rajta:
 A projektet felosztottuk több részre:
 <ol>
   <li>Maga a fordítás: közösen csináltuk meg</li> 
-  <li>Fornt-end: Kántor Kamilla</li>
+  <li>Front-end: Kántor Kamilla</li>
   <li>A Flask alkalmazás endpointjai, transzkripció, python és js közötti kommunikáció: Ferenczi Benjámin Brúnó</li>
   <li>Bejelentkező felület és adatbázis: Magyar Zsófia és Somogyi Boglárka</li>
 </ol>
