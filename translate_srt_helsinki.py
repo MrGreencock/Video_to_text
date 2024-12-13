@@ -109,6 +109,6 @@ def translate_srt_chunks_sorted(input_folder, output_file, source_language, targ
     with open(output_file, "w", encoding="utf-8") as output_srt:
         output_srt.write("\n\n".join(translated_results))
 
-def process_srt_translation(input_srt_path, output_srt_path, source_language, target_language, chunk_folder="./srt_chunks", block_limit=10):
+def process_srt_translation(input_srt_path, output_srt_path, source_language, target_language, chunk_folder="./srt_chunks", block_limit=25):
     split_srt_by_block_number(input_srt_path, chunk_folder, block_limit)
     translate_srt_chunks_sorted(chunk_folder, output_srt_path, source_language, target_language)
