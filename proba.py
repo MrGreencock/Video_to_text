@@ -239,7 +239,7 @@ def translate_sync():
             source_language=source_language,
             target_language=target_language,
             chunk_folder=chunk_folder,
-            block_limit=10
+            block_limit=25
         )
 
         with open(translated_file_path, 'r', encoding='utf-8') as f:
