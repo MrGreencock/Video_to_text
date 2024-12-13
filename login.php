@@ -17,8 +17,12 @@ $errorMessage = $_SESSION['error'] ?? null;
         <label for="password">Jelszó</label>
         <input type="password" id="password" name="password" placeholder="*********" required>
         <button type="submit">Bejelentkezés</button>
+        <br/>
+        <div class="regisztralhat">
+            <a href="register.html">Itt regisztrálhat</a>
+        </div>
         <?php if ($errorMessage): ?>
-        <h1 style="color: red;"><?php echo htmlspecialchars($errorMessage); ?></h1>
+        <h1 style="color: red; text-align: center;"><?php echo htmlspecialchars($errorMessage); ?></h1>
         <script>
             // Hozzáadja a 'shake' osztályt hibás bejelentkezés esetén
             const usernameField = document.getElementById("username");
