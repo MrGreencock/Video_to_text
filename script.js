@@ -347,10 +347,12 @@ async function insertSRTFile() {
             if (uploadResult.status !== "success") {
                 throw new Error(`Feltöltési hiba: ${uploadResult.message}`);
             }
-
-            const filePath = uploadResult.file_path; 
-            console.log("Felirat URL:", filePath);
-
+            console.log(uploadResult);
+            const filePath = await uploadResult.file_path;
+            console.log(filePath);
+            const topWords = await uploadResult.top_words;
+            console.log(topWords);
+            
             if (sourceLanguage && targetLanguage) {
                 // Ha meg vannak adva nyelvek, fordítás kérése
                 const translateResponse = await fetch("http://127.0.0.1:5000/translate", {
@@ -370,13 +372,15 @@ async function insertSRTFile() {
                     throw new Error(`Fordítási hiba: ${translateResult.message}`);
                 }
 
-                const translatedSubtitles = translateResult.translated_file; // Fordított felirat
+                const translatedSubtitles = translateResult.translated_file; 
+                const translatedSubtitlesTopWords = translateResult.topWords;
                 console.log("Fordított felirat:", translatedSubtitles);
+                console.log(translatedSubtitlesTopWords)
 
                 // Feliratok betöltése a videóhoz
-                loadSubtitles(translatedSubtitles);
+                loadSubtitles(translatedSubtitles, translatedSubtitlesTopWords);
             } else {
-                loadSubtitles(filePath); 
+                loadSubtitles(filePath, topWords); 
             }
         } catch (error) {
             console.error("Hiba az SRT fájl feldolgozása során:", error);
@@ -386,7 +390,7 @@ async function insertSRTFile() {
     fileInput.click();
 }
 
-async function loadSubtitles(filePath) {
+async function loadSubtitles(filePath, topWords) {
     try {
         console.log(`Betöltés indítása: ${filePath}`);
         
@@ -407,12 +411,26 @@ async function loadSubtitles(filePath) {
         const videoPlayer = document.getElementById("videoPlayer");
         const subtitleDiv = document.getElementById("subtitle");
 
+        if (!subtitleDiv) {
+            console.error("Subtitle div nem található.");
+            return;
+        }
+
         videoPlayer.addEventListener("timeupdate", () => {
             const currentTime = videoPlayer.currentTime;
             const activeCue = cues.find(cue => cue.start <= currentTime && cue.end >= currentTime);
 
             if (activeCue) {
-                subtitleDiv.textContent = activeCue.text;
+                // Kiemelt szavak feldolgozása
+                const highlightedText = activeCue.text.split(" ").map(word => {
+                    const cleanWord = word.toLowerCase().replace(/[^a-zA-Z0-9]/g, "");
+                    const isTopWord = topWords.some(([topWord]) => topWord === cleanWord);
+                    return isTopWord 
+                        ? `<span class="highlighted">${word}</span>` 
+                        : word;
+                }).join(" ");
+
+                subtitleDiv.innerHTML = highlightedText; // InnerHTML az HTML kiemeléshez
                 subtitleDiv.style.display = "block";
             } else {
                 subtitleDiv.textContent = "";
@@ -425,6 +443,8 @@ async function loadSubtitles(filePath) {
         console.error("Hiba a feliratok betöltésekor:", error);
     }
 }
+
+
 
 function fixTimeFormat(time) {
     if (!time.includes(',')) {
