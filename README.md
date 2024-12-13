@@ -18,5 +18,5 @@ A projektet felosztottuk több részre:
   <li>Bejelentkező felület és adatbázis: Magyar Zsófia és Somogyi Boglárka</li>
 </ol>
 
-![Képernyőfelvétel 2024-12-11 224658 - Trim - Trim - frame at 0m6s](https://github.com/user-attachments/assets/91894228-6759-4c64-aa53-6c802f9d7dee)
+![Képernyőfelvétel 2024-12-11 224658 - Trim - Trim - frame at 0m6s](https://youtu.be/Zk4VjUM_GEs?si=ssA-X7EF0OVoDmkh)
 <p align="center"><i>A kép az oldalról</i> </p> 
