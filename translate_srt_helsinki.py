@@ -56,7 +56,7 @@ def translate_via_english(text, source_language, target_language):
     )
     return final_translation
 
-def split_srt_by_block_number(input_path, output_folder, block_limit=25):
+def split_srt_by_block_number(input_path, output_folder, block_limit=10):
     os.makedirs(output_folder, exist_ok=True)
     with open(input_path, "r", encoding="utf-8") as srt_file:
         content = srt_file.read()
@@ -73,10 +73,10 @@ def split_srt_by_block_number(input_path, output_folder, block_limit=25):
 def translate_chunk(chunk_file, input_folder, source_language, target_language):
     chunk_path = os.path.join(input_folder, chunk_file)
     translated_blocks = []
+    print(f"Chunk feldolgozása elkezdődött: {chunk_file}")
     with open(chunk_path, "r", encoding="utf-8") as f:
         blocks = f.read().strip().split("\n\n")
-
-    for block in blocks:
+    for i, block in enumerate(blocks):
         if block.strip():
             lines = block.split("\n")
             if len(lines) >= 3:
@@ -87,9 +87,11 @@ def translate_chunk(chunk_file, input_folder, source_language, target_language):
                 sentences = split_text_into_sentences(cleaned_text)
                 translated_sentences = translate_sentences(sentences, source_language, target_language)
                 translated_text = " ".join(translated_sentences)
-                translated_blocks.append(f"{index}\n{timing}\n{translated_text}\n")
-                
+                translated_blocks.append(f"{index}\n{timing}\n{translated_text}")
+
+    print(f"Chunk feldolgozása befejeződött: {chunk_file}")
     return "\n\n".join(translated_blocks)
+
 
 
 def translate_srt_chunks_sorted(input_folder, output_file, source_language, target_language):
@@ -107,6 +109,6 @@ def translate_srt_chunks_sorted(input_folder, output_file, source_language, targ
     with open(output_file, "w", encoding="utf-8") as output_srt:
         output_srt.write("\n\n".join(translated_results))
 
-def process_srt_translation(input_srt_path, output_srt_path, source_language, target_language, chunk_folder="./srt_chunks", block_limit=25):
+def process_srt_translation(input_srt_path, output_srt_path, source_language, target_language, chunk_folder="./srt_chunks", block_limit=10):
     split_srt_by_block_number(input_srt_path, chunk_folder, block_limit)
     translate_srt_chunks_sorted(chunk_folder, output_srt_path, source_language, target_language)
