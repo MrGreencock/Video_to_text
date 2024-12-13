@@ -7,6 +7,9 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 import requests
 import shutil
+from wordcloud import STOPWORDS
+from collections import Counter
+import re
 
 app = Flask(__name__)
 CORS(app)
@@ -19,17 +22,31 @@ headers = {
 
 @app.route('/upload_srt', methods=['POST'])
 def upload_srt_file():
-    if 'file' not in request.files:
+
+    #File feltöltése az upload_srt mappába
+    if 'file' not in request.files: 
         return jsonify({"status": "error", "message": "No file uploaded"}), 400
 
     file = request.files['file']
     file_path = os.path.join('./upload_srt', file.filename)
     file.save(file_path)
 
-    return jsonify({"status": "success", "file_path": file_path})
+    # Top 10 szó keresése
+    with open(file_path, 'r', encoding='utf-8') as f:
+        text = f.read()
 
+    text = re.sub(r'\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}', '', text)
 
-# FFmpeg konvertálás
+    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+
+    stopwords = set(STOPWORDS)
+    words = [word.lower() for word in text.split() if word.lower() not in stopwords]
+    word_counts = Counter(words)
+    top_words = word_counts.most_common(10)
+
+    return jsonify({"status": "success", "file_path": file_path, "top_words": top_words})
+ 
+
 @app.route('/convert', methods=['POST'])
 def convert_video():
     data = request.json  # JSON adatok fogadása
@@ -60,9 +77,6 @@ def convert_video():
         }), 500
 
 
-
-import os
-import subprocess
 
 def convert_to_mp3(input_file):
     try:
@@ -197,6 +211,7 @@ def transcribe_audio_endpoint():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+
 @app.route('/translate', methods=['POST'])
 def translate_sync():
     data = request.json
@@ -224,17 +239,28 @@ def translate_sync():
             source_language=source_language,
             target_language=target_language,
             chunk_folder=chunk_folder,
-            block_limit=25
+            block_limit=10
         )
+
+        with open(translated_file_path, 'r', encoding='utf-8') as f:
+             text = f.read()
+
+        text = re.sub(r'\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}', '', text)
+
+        text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+        
+        stopwords = set(STOPWORDS)
+        words = [word.lower() for word in text.split() if word.lower() not in stopwords]
+        word_counts = Counter(words)
+        top_words = word_counts.most_common(10)
 
         # Fordítás kész, JSON válasz visszaadása
         return jsonify({
             "status": "success",
             "message": "Fordítás kész",
-            "translated_file": translated_file_path
+            "translated_file": translated_file_path,
+            "topWords" : top_words
         })
-    
-        
     
     except Exception as e:
         # Hiba esetén JSON válasz visszaadása
@@ -245,4 +271,4 @@ def translate_sync():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
